@@ -12,21 +12,12 @@ class HistorialEventoRepository:
     def get_by_historial(self, id_historial):
         return HistorialEvento.objects.filter(historial_libro_id=id_historial).order_by("-fecha_evento")
 
-    def create(self, tipo_evento, descripcion, fecha_evento, historial_libro):
-        return HistorialEvento.objects.create(
-            tipo_evento=tipo_evento,
-            descripcion=descripcion,
-            fecha_evento=fecha_evento,
-            historial_libro=historial_libro,
-        )
+    def create(self, **kwargs):
+        return HistorialEvento.objects.create(**kwargs)
 
     def update(self, id_evento, **kwargs):
         HistorialEvento.objects.filter(id_evento=id_evento).update(**kwargs)
         return self.get_by_id(id_evento)
 
     def delete(self, id_evento):
-        evento = self.get_by_id(id_evento)
-        if evento:
-            evento.delete()
-            return True
-        return False
+        HistorialEvento.objects.filter(id_evento=id_evento).delete()

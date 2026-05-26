@@ -1,12 +1,12 @@
 from core.repositories.libro_repository import LibroRepository
-from core.repositories.historial_repository import HistorialRepository
+from core.services.historial_services import HistorialService
 
 
 class LibroService:
 
     def __init__(self):
         self.repository = LibroRepository()
-        self.historial_repository = HistorialRepository()
+        self.historial_service = HistorialService()
 
     def listar_libros(self):
         return self.repository.get_all()
@@ -40,7 +40,7 @@ class LibroService:
             isbn=isbn,
             disponible=disponible,
         )
-        self.historial_repository.create(libro=libro)
+        self.historial_service.crear_historial(libro.id_libro)
         return libro
 
     def actualizar_libro(self, id_libro, **kwargs):

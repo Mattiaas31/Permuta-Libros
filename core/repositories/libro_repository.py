@@ -18,28 +18,12 @@ class LibroRepository:
     def get_by_categoria(self, id_categoria):
         return Libro.objects.select_related("duenio", "categoria").filter(categoria_id=id_categoria)
 
-    def create(self, titulo, autor, anio_publicado, editorial, descripcion, estado, genero, categoria, duenio=None, isbn=None, disponible=True):
-        return Libro.objects.create(
-            titulo=titulo,
-            autor=autor,
-            anio_publicado=anio_publicado,
-            editorial=editorial,
-            isbn=isbn,
-            descripcion=descripcion,
-            estado=estado,
-            disponible=disponible,
-            genero=genero,
-            categoria=categoria,
-            duenio=duenio,
-        )
+    def create(self, **kwargs):
+        return Libro.objects.create(**kwargs)
 
     def update(self, id_libro, **kwargs):
         Libro.objects.filter(id_libro=id_libro).update(**kwargs)
         return self.get_by_id(id_libro)
 
     def delete(self, id_libro):
-        libro = self.get_by_id(id_libro)
-        if libro:
-            libro.delete()
-            return True
-        return False
+        Libro.objects.filter(id_libro=id_libro).delete()

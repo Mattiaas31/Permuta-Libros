@@ -15,12 +15,9 @@ class PermutaRepository:
     def get_by_solicitud(self, id_solicitud):
         return Permuta.objects.filter(solicitud_id=id_solicitud).first()
 
-    def create(self, fecha_confirmacion, solicitud, estado="pendiente"):
-        return Permuta.objects.create(
-            fecha_confirmacion=fecha_confirmacion,
-            solicitud=solicitud,
-            estado=estado,
-        )
+    def create(self,**kwargs):
+        return Permuta.objects.create(**kwargs)
+        
 
     def update_estado(self, id_permuta, estado):
         Permuta.objects.filter(id_permuta=id_permuta).update(estado=estado)
@@ -31,8 +28,4 @@ class PermutaRepository:
         return self.get_by_id(id_permuta)
 
     def delete(self, id_permuta):
-        permuta = self.get_by_id(id_permuta)
-        if permuta:
-            permuta.delete()
-            return True
-        return False
+        Permuta.objects.filter(id_permuta=id_permuta).delete()

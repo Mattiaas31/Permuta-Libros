@@ -1,4 +1,5 @@
 from core.models.historial import Historial
+from django.db.models import F
 
 
 class HistorialRepository:
@@ -16,19 +17,13 @@ class HistorialRepository:
         return Historial.objects.create(libro=libro, cantidad_permutas=cantidad_permutas)
 
     def incrementar_permutas(self, id_historial):
-        historial = self.get_by_id(id_historial)
-        if historial:
-            historial.cantidad_permutas += 1
-            historial.save()
-        return historial
+        Historial.objects.filter(id_historial=id_historial).update(
+        cantidad_permutas=F("cantidad_permutas") + 1)
+        return self.get_by_id(id_historial)
 
     def update(self, id_historial, **kwargs):
         Historial.objects.filter(id_historial=id_historial).update(**kwargs)
         return self.get_by_id(id_historial)
 
     def delete(self, id_historial):
-        historial = self.get_by_id(id_historial)
-        if historial:
-            historial.delete()
-            return True
-        return False
+        Historial.objects.filter(id_historial=id_historial).delete()

@@ -23,8 +23,4 @@ class UsuarioRepository:
         return self.get_by_id(id_usuario)
 
     def delete(self, id_usuario):
-        usuario = self.get_by_id(id_usuario)
-        if usuario:
-            usuario.delete()
-            return True
-        return False
+        Usuario.objects.filter(id_usuario=id_usuario).delete()

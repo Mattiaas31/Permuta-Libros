@@ -1,9 +1,9 @@
 from django.utils import timezone
-
 from core.repositories.permuta_repository import PermutaRepository
 from core.repositories.solictud_permuta_repository import SolicitudPermutaRepository
-from core.repositories.historial_repository import HistorialRepository
-from core.repositories.historial_eventos_repository import HistorialEventoRepository
+from core.services.historial_services import HistorialService          
+from core.services.historial_eventos_services import HistorialEventoService  
+
 
 
 class PermutaService:
@@ -11,8 +11,8 @@ class PermutaService:
     def __init__(self):
         self.repository = PermutaRepository()
         self.solicitud_repository = SolicitudPermutaRepository()
-        self.historial_repository = HistorialRepository()
-        self.historial_evento_repository = HistorialEventoRepository()
+        self.historial_service = HistorialService()                    
+        self.historial_evento_service = HistorialEventoService() 
 
     def listar_permutas(self):
         return self.repository.get_all()
@@ -66,12 +66,15 @@ class PermutaService:
         libros = list(solicitud.libros_solicitados.all()) + list(solicitud.libros_ofrecidos.all())
         hoy = timezone.now().date()
         for libro in libros:
-            historial = self.historial_repository.get_by_libro(libro.id_libro)
-            if historial:
-                self.historial_repository.incrementar_permutas(historial.id_historial)
-                self.historial_evento_repository.create(
+            try:
+                historial = self.historial_service.obtener_por_libro(libro.id_libro)  
+                self.historial_service.incrementar_permutas(historial.id_historial)   
+                self.historial_evento_service.registrar_evento(                        
+                    id_historial=historial.id_historial,
                     tipo_evento="permuta_finalizada",
-                    descripcion=f"Permuta #{permuta.id_permuta} finalizada entre {solicitud.usuario_solicitante} y {solicitud.usuario_receptor}.",
+                    descripcion=f"Permuta #{permuta.id_permuta} finalizada entre "
+                                f"{solicitud.usuario_solicitante} y {solicitud.usuario_receptor}.",
                     fecha_evento=hoy,
-                    historial_libro=historial,
                 )
+            except ValueError:
+                pass  # el libro no tiene historial, se omite silenciosamente

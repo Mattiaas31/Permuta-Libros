@@ -20,8 +20,4 @@ class CategoriaRepository:
         return self.get_by_id(id_categoria)
 
     def delete(self, id_categoria):
-        categoria = self.get_by_id(id_categoria)
-        if categoria:
-            categoria.delete()
-            return True
-        return False
+        Categoria.objects.filter(id_categoria=id_categoria).delete()
