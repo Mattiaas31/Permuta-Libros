@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio — Permuta de Libros{% endblock %}
+
+{% block nav_home %}active{% endblock %}
+
+{% block page_heading %}
+  <h1 class="page-heading">Libros Disponibles</h1>
+{% endblock %}
+
+{% block content %}
+
+  {% if libros %}
+    {% for libro in libros %}
+      <div class="book-card">
+        <div class="book-card__spine"></div>
+        <div>
+          <div class="book-card__title">{{ libro.titulo }}</div>
+          <div class="book-card__meta">
+            {{ libro.autor }} &middot; {{ libro.categoria }} &middot; {{ libro.estado }}
+          </div>
+          <div class="book-card__body">
+            Ofrecido por <em>{{ libro.duenio }}</em>
+          </div>
+          <div class="book-card__actions">
+            <a href="#" class="btn btn--primary">Solicitar permuta</a>
+            <a href="#" class="btn">Ver detalle</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p style="font-style: italic; color: var(--ink-soft);">
+      No hay libros disponibles en este momento.
+    </p>
+  {% endif %}
+
+  <div class="divider-ornate"></div>
+
+  <p style="font-size: 0.88rem; color: var(--sepia); font-style: italic; text-align: center;">
+    Mostrando {{ total_disponibles }} libro{{ total_disponibles|pluralize }} disponible{{ total_disponibles|pluralize }}
+  </p>
+
+{% endblock %}
+
+
+{% block sidebar %}
+<aside class="sidebar">
+
+  <div class="sidebar-block">
+    <h2 class="sidebar-title">Mi cuenta</h2>
+    {% if user.is_authenticated %}
+      <div style="font-size: 0.9rem; line-height: 2.1; color: var(--ink-soft);">
+        <div>📚 <strong>{{ mis_libros_count|default:"0" }}</strong> libros publicados</div>
+        <div>🔄 <strong>{{ permutas_pendientes|default:"0" }}</strong> permutas pendientes</div>
+        <div>✅ <strong>{{ permutas_realizadas|default:"0" }}</strong> permutas realizadas</div>
+      </div>
+      <div style="margin-top: 1rem;">
+        <a href="#" class="btn btn--block">Mi perfil</a>
+      </div>
+    {% else %}
+      <p style="font-size: 0.88rem; color: var(--ink-soft); font-style: italic; margin-bottom: 1rem;">
+        Ingresá para gestionar tus libros y permutas.
+      </p>
+      <a href="#" class="btn btn--primary btn--block">Ingresar</a>
+    {% endif %}
+  </div>
+
+  <div class="sidebar-block">
+    <h2 class="sidebar-title">Categorías</h2>
+    <ul style="list-style: none; font-size: 0.9rem; line-height: 2.2; color: var(--ink-soft);">
+      {% for categoria in categorias %}
+        <li>
+          <a href="#" style="color: var(--ink-soft); text-decoration: none;">
+            &rsaquo; {{ categoria }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="sidebar-block">
+    <h2 class="sidebar-title">¿Cómo funciona?</h2>
+    <p style="font-size: 0.87rem; line-height: 1.8; color: var(--ink-soft); font-style: italic;">
+      Publicá un libro que ya no leas. Encontrá uno que te interese. Acordá el intercambio con el otro lector. Simple como siempre fue.
+    </p>
+  </div>
+
+</aside>
+{% endblock %}
