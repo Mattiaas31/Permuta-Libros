@@ -1,0 +1,131 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Permuta de Libros{% endblock %}</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+  {# ════════════════════════════════════════════
+     HEADER
+  ════════════════════════════════════════════ #}
+  <header class="site-header">
+    <div class="header-top">
+      <span class="ornament">✦</span>
+      <a href="{% url 'home' %}" class="site-title">Permuta de Libros</a>
+      <span class="ornament">✦</span>
+      <div class="site-subtitle">Un intercambio entre lectores</div>
+    </div>
+
+    <nav class="main-nav" aria-label="Navegación principal">
+      <a href="{% url 'home' %}"
+         class="nav-link {% block nav_home %}{% endblock %}">Inicio</a>
+      <a href="{% url 'catalogo' %}"
+         class="nav-link {% block nav_catalogo %}{% endblock %}">Catálogo</a>
+      <a href="{% url 'mis_libros' %}"
+         class="nav-link {% block nav_mis_libros %}{% endblock %}">Mis Libros</a>
+      <a href="{% url 'permutas' %}"
+         class="nav-link {% block nav_permutas %}{% endblock %}">Permutas</a>
+      <a href="{% url 'historial' %}"
+         class="nav-link {% block nav_historial %}{% endblock %}">Historial</a>
+
+      <div class="nav-user-area">
+        {% if user.is_authenticated %}
+          <span class="nav-username">{{ user.username }}</span>
+          <a href="{% url 'logout' %}" class="nav-link">Salir</a>
+        {% else %}
+          <a href="{% url 'login' %}" class="nav-link">Ingresar</a>
+          <a href="{% url 'registro' %}" class="nav-link nav-link--accent">Registrarse</a>
+        {% endif %}
+      </div>
+    </nav>
+  </header>
+
+  {# ════════════════════════════════════════════
+     MENSAJES DE DJANGO (alerts)
+  ════════════════════════════════════════════ #}
+  {% if messages %}
+    <div class="messages-container" role="alert" aria-live="polite">
+      {% for message in messages %}
+        <div class="alert alert--{{ message.tags }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {# ════════════════════════════════════════════
+     LAYOUT PRINCIPAL
+     Podés cambiar a page-wrapper--full en
+     páginas que no necesiten sidebar.
+  ════════════════════════════════════════════ #}
+  <div class="page-wrapper {% block layout_class %}{% endblock %}">
+
+    <main class="main-content" id="main-content">
+      {% block breadcrumb %}{% endblock %}
+
+      {% block page_heading %}{% endblock %}
+
+      {% block content %}{% endblock %}
+    </main>
+
+    {% block sidebar %}
+    <aside class="sidebar" aria-label="Panel lateral">
+      {% if user.is_authenticated %}
+        <div class="sidebar-block">
+          <h2 class="sidebar-title">Mi cuenta</h2>
+          {% block sidebar_cuenta %}
+            <p style="font-size: 0.9rem; color: var(--ink-soft); font-style: italic;">
+              Cargando datos del usuario…
+            </p>
+          {% endblock %}
+        </div>
+      {% endif %}
+
+      <div class="sidebar-block">
+        <h2 class="sidebar-title">Categorías</h2>
+        {% block sidebar_categorias %}
+          <p style="font-size: 0.9rem; color: var(--ink-soft); font-style: italic;">
+            Sin categorías cargadas.
+          </p>
+        {% endblock %}
+      </div>
+
+      {% block sidebar_extra %}{% endblock %}
+    </aside>
+    {% endblock %}
+
+  </div>
+
+  {# ════════════════════════════════════════════
+     FOOTER
+  ════════════════════════════════════════════ #}
+  <footer class="site-footer">
+    <div class="footer-quote">
+      — Un libro prestado es una amistad ofrecida —
+    </div>
+    <nav class="footer-links" aria-label="Pie de página">
+      <a href="{% url 'acerca' %}">Acerca de</a>
+      <a href="{% url 'contacto' %}">Contacto</a>
+      <a href="{% url 'terminos' %}">Términos de uso</a>
+    </nav>
+    <div class="footer-copy">
+      Permuta de Libros &copy; {% now "Y" %}
+    </div>
+  </footer>
+
+  <script src="{% static 'js/main.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+
+</body>
+</html>
